@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose"; 
 import userRouter from "./routes/userRoutes.js";
 import donorRouter from "./routes/donorRoutes.js";
+import projectRouter from "./routes/projectRoutes.js";
 
 dotenv.config();
 const app = express(); 
@@ -24,9 +25,9 @@ app.listen(port,()=>{
 })
 
 app.get("/",(req,res) => {
-    res.send("Hello World");
+    res.send("Hello World da punda");
 })
 
 app.use("/api/users",userRouter); 
 app.use("/api/donors",donorRouter);
-
+app.use("/api/project",projectRouter);
