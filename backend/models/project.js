@@ -23,7 +23,7 @@ const projectSchema = new mongoose.Schema({
         required: true
     },
     goals: {
-        type: [String], // Array of goals
+        type: [String], 
         required: true
     },
     status: {
