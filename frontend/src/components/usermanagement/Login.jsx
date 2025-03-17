@@ -52,7 +52,7 @@ const Login = () => {
         // Navigate based on role
         switch (data.role) {
           case "user":
-            navigate("/user-dashboard");
+            navigate("/");
             break;
           case "doner":
             navigate("/doner-dashboard");
