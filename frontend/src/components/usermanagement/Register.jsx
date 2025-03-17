@@ -1,17 +1,20 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
     email: "",
-    role: "user",
+    role: "user",  // Default role set to "user"
     password: "",
     age: "",
   });
 
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(""); // For success message
+  const [success, setSuccess] = useState("");
+  const navigate = useNavigate(); // Used for redirecting to the login page after success
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,13 +22,19 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Reset previous messages
+
+    // Reset messages
     setError("");
     setSuccess("");
 
     // Basic validation
-    if (!formData.firstname || !formData.lastname || !formData.email || !formData.password || !formData.age) {
+    if (
+      !formData.firstname ||
+      !formData.lastname ||
+      !formData.email ||
+      !formData.password ||
+      !formData.age
+    ) {
       setError("All fields are required!");
       return;
     }
@@ -35,27 +44,27 @@ const Register = () => {
       return;
     }
 
+    // Additional check for password length
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long.");
+      return;
+    }
+
     try {
-      const response = await fetch("http://localhost:5000/api/users/register", {
-        method: "POST",
+      // Sending form data to the backend to register the user
+      const response = await axios.post("http://localhost:5000/api/users/register", formData, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess("Registration successful! Redirecting to login...");
-        setTimeout(() => {
-          window.location.href = "/login"; // Redirect after success
-        }, 2000);
-      } else {
-        setError(data.error || "Registration failed. Try again.");
-      }
+      setSuccess("Registration successful! Redirecting to login...");
+      setTimeout(() => {
+        navigate("/login"); // Redirect to login page after a successful registration
+      }, 2000);
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      // Displaying error message from the backend if available
+      setError(err.response?.data?.error || "Registration failed. Try again.");
     }
   };
 
@@ -64,14 +73,14 @@ const Register = () => {
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <h2 className="text-2xl font-bold text-center text-green-800">Register</h2>
 
-        {/* Success Popup */}
+        {/* Success Message */}
         {success && (
           <div className="bg-green-100 text-green-700 border border-green-500 p-3 rounded-lg text-sm text-center mt-4">
             {success}
           </div>
         )}
 
-        {/* Error Popup */}
+        {/* Error Message */}
         {error && (
           <div className="bg-red-100 text-red-700 border border-red-500 p-3 rounded-lg text-sm text-center mt-4">
             {error}
@@ -114,8 +123,6 @@ const Register = () => {
               placeholder="Enter your email"
             />
           </div>
-
-      
 
           <div className="mb-4">
             <label className="block text-gray-700 font-medium">Password</label>

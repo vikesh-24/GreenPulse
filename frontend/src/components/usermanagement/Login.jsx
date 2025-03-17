@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +9,7 @@ const Login = () => {
   });
 
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,19 +32,25 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/users/login",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const data = await response.json();
+      const data = response.data;
 
-      if (response.ok) {
+      // If login is successful, store the token and navigate based on role
+      if (response.status === 200) {
+        // Store the token in localStorage (or use cookies)
+        localStorage.setItem("authToken", data.token);
+
         // Navigate based on role
-        switch (data.user.role) {
+        switch (data.role) {
           case "user":
             navigate("/user-dashboard");
             break;
@@ -56,11 +63,9 @@ const Login = () => {
           default:
             setError("Invalid role");
         }
-      } else {
-        setError(data.error || "Login failed");
       }
     } catch (err) {
-      setError("An error occurred during login");
+      setError(err.response?.data?.message || "An error occurred during login");
     }
   };
 
