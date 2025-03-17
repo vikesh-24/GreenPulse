@@ -7,7 +7,7 @@ const Header = () => {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
-        <header className="bg-gradient-to-r from-green-800 to-green-300 text-white py-3 px-4 shadow-lg sticky top-2 z-50 rounded-full w-full">
+        <header className="mx-auto w-full max-w-[340px]  sm:max-w-[500px] md:max-w-[740px] lg:max-w-[900px] xl:max-w-[1320px] py-2 bg-gradient-to-r from-green-800 to-green-300 text-white  px-4 shadow-lg sticky top-2 z-50 rounded-full">
             <div className="max-w-6xl mx-auto flex justify-between items-center relative">
                 <h1 className="text-xl font-bold">GREEN PULSE</h1>
                 

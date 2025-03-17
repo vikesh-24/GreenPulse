@@ -13,7 +13,7 @@ import About from './components/about';
 const App = () => {
     return (
         <Router>
-            <div>
+            <div >
                
             <Header /> 
 
