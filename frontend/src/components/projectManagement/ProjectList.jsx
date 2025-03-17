@@ -32,7 +32,7 @@ const ProjectList = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-green-50 py-10 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
                 <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">Project List</h2>
                 
