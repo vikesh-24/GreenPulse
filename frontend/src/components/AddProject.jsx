@@ -38,10 +38,10 @@ const AddProject = () => {
     };
 
     return (
-        <div>
-            <h2>Add Project</h2>
+        <div className='bg-black'>
+            <h2 className='bg-violet-600'>Add Project</h2>
             <form onSubmit={handleSubmit}>
-                <div>
+                <div >
                     <label>Name:</label>
                     <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
                 </div>
