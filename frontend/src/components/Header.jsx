@@ -22,7 +22,7 @@ const Header = () => {
                             <Link to="/" className="block py-1 md:py-0 hover:text-gray-200 transition">Home</Link>
                         </li>
                         <li>
-                            <Link to="/projects" className="block py-1 md:py-0 hover:text-gray-200 transition">Projects</Link>
+                            <Link to="/projectManagement/list" className="block py-1 md:py-0 hover:text-gray-200 transition">Projects</Link>
                         </li>
                         <li>
                             <Link to="/about" className="block py-1 md:py-0 hover:text-gray-200 transition">About</Link>

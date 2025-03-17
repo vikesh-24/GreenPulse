@@ -40,9 +40,9 @@ const ProjectList = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {projects.map((project) => (
                             <div key={project._id} className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow">
-                                <h3 className="text-xl font-semibold text-indigo-600">{project.name}</h3>
+                                <h3 className="text-xl font-semibold text-green-600">{project.name}</h3>
                                 <p className="text-gray-700 mt-2">{project.description}</p>
-                                <p className="mt-4 text-sm text-gray-500">Status: <span className="font-medium text-indigo-500">{project.status}</span></p>
+                                <p className="mt-4 text-sm text-gray-500">Status: <span className="font-medium text-green-500">{project.status}</span></p>
                                 <p className="mt-1 text-sm text-gray-500">Start Date: {new Date(project.startDate).toLocaleDateString()}</p>
                                 <p className="text-sm text-gray-500">End Date: {new Date(project.endDate).toLocaleDateString()}</p>
                             </div>

@@ -15,6 +15,14 @@ const userSchema = new mongoose.Schema({
         unique:true,
         include:'@'
     },
+
+    role: { 
+        type: String, 
+        enum: ["user", "doner", "admin"],
+        default: "user",  // Default role set to "user"
+        required: true 
+    },
+
     password:{
         type:String,
         required:true

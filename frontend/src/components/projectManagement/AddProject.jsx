@@ -138,7 +138,7 @@ const AddProject = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full h-12 bg-indigo-600 text-white text-lg font-semibold rounded-md hover:bg-indigo-700 transition"
+                        className="w-full h-12 bg-green-500 text-white text-lg font-semibold rounded-md hover:bg-green-700 transition"
                     >
                         Add Project
                     </button>

@@ -12,7 +12,7 @@ const Home = () => {
                     Your all-in-one Eco-System Project Management Solution. Plan, track, and collaborate efficiently.
                 </p>
                 <div className="mt-6 space-x-4">
-                    <Link to="/projectManagement" className="bg-green-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-700 transition">
+                    <Link to="/register" className="bg-green-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-700 transition">
                         Get Started
                     </Link>
                     <Link to="/about" className="bg-white text-green-600 border border-green-600 px-6 py-3 rounded-full shadow-lg hover:bg-green-100 transition">
