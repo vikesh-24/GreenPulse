@@ -6,6 +6,7 @@ import AddProject from './components/projectManagement/AddProject';
 import EditProject from './components/projectManagement/EditProject';
 import DeleteProject from './components/projectManagement/DeleteProject';
 import Header from './components/Header';
+import Footer from './components/Footer';
 
 const App = () => {
     return (
@@ -24,6 +25,9 @@ const App = () => {
                     <Route path="/projectManagement/edit/:id" element={<EditProject />} />
                     <Route path="/projectManagement/delete/:id" element={<DeleteProject />} />
                 </Routes>
+
+
+             <Footer/>   
             </div>
         </Router>
     );
