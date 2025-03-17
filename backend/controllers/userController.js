@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 export const registerUser = async (req, res) => {
   try {
-    const { firstname, lastname, email, age, password } = req.body;
+    const { firstname, lastname, email, age, password,role } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -23,6 +23,7 @@ export const registerUser = async (req, res) => {
       lastname,
       email,
       age,
+      role,
       password: hashedPassword
     });
 
