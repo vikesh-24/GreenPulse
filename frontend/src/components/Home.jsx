@@ -19,6 +19,13 @@ const Home = () => {
                         Learn More
                     </Link>
                 </div>
+                {/* Donation Section */}
+                <div className='mt-10 ml-16 bg-green-300 shadow-lg hover:shadow-xl max-w-xl min-h-24 flex flex-col gap-5 rounded-lg  items-center justify-center'>
+                   <div className='flex flex-col items-center justify-center'>
+                   <h1 className='font-serif'>Be A Contributor By Donating US </h1>
+                   <button className='bg-lime-300 w-24 mt-5 px-0 hover:rounded-lg'>Donate Now</button>
+                   </div>
+                </div>
             </div>
 
             {/* Features Section */}

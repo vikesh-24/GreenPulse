@@ -19,7 +19,7 @@ const Header = () => {
                 <nav className={`md:flex space-x-4 items-center ${menuOpen ? 'block' : 'hidden'} absolute md:relative top-14 md:top-0 left-0 md:left-auto w-full md:w-auto bg-green-800 md:bg-transparent shadow-md md:shadow-none p-4 md:p-0 rounded-full md:rounded-none` }>
                     <ul className="md:flex md:space-x-4 items-center">
                         <li>
-                            <Link to="/" className="block py-1 md:py-0 hover:text-gray-200 transition">Home</Link>
+                            <Link to="/" className="block py-1 md:py-0 hover:text-gray-200 transition active:underline-offset-1">Home</Link>
                         </li>
                         <li>
                             <Link to="/projectManagement/list" className="block py-1 md:py-0 hover:text-gray-200 transition">Projects</Link>
