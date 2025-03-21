@@ -86,7 +86,7 @@ function AddDonor() {
         
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition duration-300"
+          className="w-full h-12 bg-green-500 text-white text-lg font-semibold rounded-md hover:bg-green-700 transition"
         >
           Donate
         </button>
