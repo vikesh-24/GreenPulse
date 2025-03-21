@@ -13,6 +13,8 @@ import About from './components/about';
 import AddDonor from './components/DonorManagement/AddDonor';
 import MockPurchase from './components/DonorManagement/MockPurchase';
 import Donors from './components/DonorManagement/Donors';
+import AdminDashboard from './components/Admin/Admindashboard';
+
 const App = () => {
     return (
         <Router>
@@ -35,6 +37,7 @@ const App = () => {
                     <Route path="/donate/add" element={<AddDonor />} />
                     <Route path="/mock-purchase" element={<MockPurchase />} />
                     <Route path='/donors' element={<Donors/>}/>
+                    <Route path='/admin' element={<AdminDashboard/>}/>
 
                 </Routes>
 
