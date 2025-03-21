@@ -23,21 +23,23 @@ function Donors() {
     }, []);
 
     return (
-        <div className='p-4'>
-            <span className='text-2xl inline-block mb-4'>Recent Donors Who Contributed</span>
+        <div className="donors-container p-6">
+            <h2 className="text-3xl font-bold mb-6 text-center">Recent Donors Who Contributed</h2>
             {isFetched ? (
                 apiData.length > 0 ? (
                     apiData.map((donor) => (
-                        <div key={donor.id} className='border p-2 mb-2 rounded'>
-                            <p><strong>Name:</strong> {donor.name}</p>
-                            <p><strong>Phone:</strong> {donor.phone}</p>
+                        <div key={donor.id} className="donor-card border p-4 mb-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 bg-white">
+                            <p className="text-lg font-medium"><strong>Name:</strong> {donor.name}</p>
+                            {/* <p className="text-md"><strong>Email:</strong> {donor.email}</p>
+                            <p className="text-md"><strong>Phone:</strong> {donor.phonenumber ? donor.phonenumber : 'Not Provided'}</p> */}
+                            <p className="text-md"><strong>Amount Donated:</strong> ${donor.amount}</p>
                         </div>
                     ))
                 ) : (
-                    <p>No donors found.</p>
+                    <p className="text-center text-lg">No donors found.</p>
                 )
             ) : (
-                <p>Loading...</p>
+                <p className="text-center text-lg">Loading...</p>
             )}
         </div>
     );

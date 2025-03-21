@@ -10,6 +10,9 @@ import Footer from './components/Footer';
 import Register from './components/usermanagement/Register';
 import Login from './components/usermanagement/Login';
 import About from './components/about';
+import AddDonor from './components/DonorManagement/AddDonor';
+import MockPurchase from './components/DonorManagement/MockPurchase';
+import Donors from './components/DonorManagement/Donors';
 const App = () => {
     return (
         <Router>
@@ -29,6 +32,9 @@ const App = () => {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/about" element={<About />} />
+                    <Route path="/donate/add" element={<AddDonor />} />
+                    <Route path="/mock-purchase" element={<MockPurchase />} />
+                    <Route path='/donors' element={<Donors/>}/>
 
                 </Routes>
 
