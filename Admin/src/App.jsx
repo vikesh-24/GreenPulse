@@ -6,6 +6,7 @@ import Admindashboard from './pages/Admindashboard';
 import Adminprojectlist from './pages/Adminprojectlist';
 import  Editprojects from './pages/EditProject';
 import AddProject from './pages/AddProject';
+import Users from './pages/Users';
 import { Route,Routes } from 'react-router-dom';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path='/adminprojectlist' element={<Adminprojectlist/>}/>
         <Route path='/editproject/:id' element={<Editprojects/>}/>
         <Route path='/addproject' element={<AddProject/>}/>
+        <Route path='/admin/users' element={<Users/>}/>
       </Routes>
 
 
