@@ -139,6 +139,7 @@ const AddProject = () => {
                     <button
                         type="submit"
                         className="w-full h-12 bg-green-500 text-white text-lg font-semibold rounded-md hover:bg-green-700 transition"
+                        onClick={navigate('/adminprojectlist')}
                     >
                         Add Project
                     </button>

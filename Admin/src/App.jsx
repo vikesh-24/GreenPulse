@@ -5,6 +5,7 @@ import './App.css'
 import Admindashboard from './pages/Admindashboard';
 import Adminprojectlist from './pages/Adminprojectlist';
 import  Editprojects from './pages/EditProject';
+import AddProject from './pages/AddProject';
 import { Route,Routes } from 'react-router-dom';
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path='/dashboard' element={<Admindashboard/>}/>
         <Route path='/adminprojectlist' element={<Adminprojectlist/>}/>
         <Route path='/editproject/:id' element={<Editprojects/>}/>
+        <Route path='/addproject' element={<AddProject/>}/>
       </Routes>
 
 
