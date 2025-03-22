@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const EditProject = () => {
-    const { id } = useParams(); // Get the project ID from the URL
-    const navigate = useNavigate(); // For navigation after form submission
+    const { id } = useParams();
+    const navigate = useNavigate();
     const [project, setProject] = useState({
         name: '',
         type: '',
@@ -14,63 +14,51 @@ const EditProject = () => {
         goals: '',
         status: 'Not Started',
     });
-    const [loading, setLoading] = useState(true); // Track loading state
-    const [error, setError] = useState(''); // Track errors
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    // Fetch project details when the component mounts or the ID changes
     useEffect(() => {
         fetchProject();
     }, [id]);
 
-    // Fetch project data from the API
     const fetchProject = async () => {
         try {
-            console.log(id);
             const response = await axios.get(`http://localhost:5000/api/projects/project/${id}`);
-            const data = response.data;
+            const data = response.data.data;
 
-            // Format the data for the form
             setProject({
-                name: data.name || '',
-                type: data.type || '',
-                description: data.description || '',
-                startDate: data.startDate ? data.startDate.split('T')[0] : '',
-                endDate: data.endDate ? data.endDate.split('T')[0] : '',
-                goals: data.goals ? data.goals.join(', ') : '',
-                status: data.status || 'Not Started',
+                ...data,
+                startDate: data.startDate ? new Date(data.startDate).toISOString().split('T')[0] : '',
+                endDate: data.endDate ? new Date(data.endDate).toISOString().split('T')[0] : '',
+                goals: Array.isArray(data.goals) ? data.goals.join(', ') : '',
             });
-            setLoading(false); // Data fetched, stop loading
+
+            setLoading(false);
         } catch (error) {
             console.error('Error fetching project:', error);
             setError('Failed to fetch project details. Please try again later.');
-            setLoading(false); // Stop loading even if there's an error
+            setLoading(false);
         }
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const projectData = {
-                name: project.name,
-                type: project.type,
-                description: project.description,
+                ...project,
                 startDate: project.startDate ? new Date(project.startDate) : null,
                 endDate: project.endDate ? new Date(project.endDate) : null,
                 goals: project.goals ? project.goals.split(',').map(goal => goal.trim()) : [],
-                status: project.status,
             };
 
-            // Send updated project data to the API
             await axios.put(`http://localhost:5000/api/projects/project/${id}`, projectData);
-            navigate('/projects'); // Navigate to the projects list after successful update
+            navigate('/adminprojectlist');
         } catch (error) {
             console.error('Error updating project:', error);
             setError('Failed to update project. Please try again.');
         }
     };
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProject((prevProject) => ({
@@ -79,12 +67,10 @@ const EditProject = () => {
         }));
     };
 
-    // Display loading state
     if (loading) {
         return <div className="min-h-screen bg-green-50 flex items-center justify-center">Loading...</div>;
     }
 
-    // Display error message
     if (error) {
         return (
             <div className="min-h-screen bg-green-50 flex items-center justify-center">
@@ -107,7 +93,6 @@ const EditProject = () => {
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
                 <h2 className="text-3xl font-bold text-gray-900 text-center mb-6">Edit Project</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Name Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Name:</label>
                         <input
@@ -120,7 +105,6 @@ const EditProject = () => {
                         />
                     </div>
 
-                    {/* Type Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Type:</label>
                         <input
@@ -133,7 +117,6 @@ const EditProject = () => {
                         />
                     </div>
 
-                    {/* Description Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Description:</label>
                         <textarea
@@ -145,7 +128,6 @@ const EditProject = () => {
                         ></textarea>
                     </div>
 
-                    {/* Start Date Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Start Date:</label>
                         <input
@@ -154,11 +136,9 @@ const EditProject = () => {
                             value={project.startDate}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
-                            required
                         />
                     </div>
 
-                    {/* End Date Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">End Date:</label>
                         <input
@@ -167,11 +147,9 @@ const EditProject = () => {
                             value={project.endDate}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
-                            required
                         />
                     </div>
 
-                    {/* Goals Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Goals (comma-separated):</label>
                         <input
@@ -180,11 +158,9 @@ const EditProject = () => {
                             value={project.goals}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
-                            required
                         />
                     </div>
 
-                    {/* Status Field */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Status:</label>
                         <select
@@ -192,7 +168,6 @@ const EditProject = () => {
                             value={project.status}
                             onChange={handleChange}
                             className="w-full p-2 border rounded-md focus:ring-2 focus:ring-indigo-500"
-                            required
                         >
                             <option value="Not Started">Not Started</option>
                             <option value="In Progress">In Progress</option>
@@ -201,7 +176,6 @@ const EditProject = () => {
                         </select>
                     </div>
 
-                    {/* Submit Button */}
                     <button
                         type="submit"
                         className="w-full h-12 bg-green-500 text-white text-lg font-semibold rounded-md hover:bg-green-700 transition"

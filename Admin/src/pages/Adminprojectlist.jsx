@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
@@ -16,17 +16,13 @@ const ProjectList = () => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/projects/projects");
-      if (!response.ok) {
-        throw new Error("Failed to fetch projects");
-      }
-      const data = await response.json();
-      console.log("Fetched data:", data);
-
-      if (data.data && Array.isArray(data.data)) {
-        setProjects(data.data);
+      const response = await axios.get("http://localhost:5000/api/projects/projects");
+      console.log("Fetched data:", response.data);
+      
+      if (response.data.data && Array.isArray(response.data.data)) {
+        setProjects(response.data.data);
       } else {
-        console.error("Unexpected data format:", data);
+        console.error("Unexpected data format:", response.data);
         setProjects([]);
       }
     } catch (error) {
@@ -35,14 +31,21 @@ const ProjectList = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/editproject/${id}`); 
+    navigate(`/editproject/${id}`);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this project?")) {
-      setProjects(projects.filter((project) => project._id !== id));
+      try {
+        await axios.delete(`http://localhost:5000/api/projects/delete/${id}`);
+        setProjects(projects.filter((project) => project._id !== id));
+      } catch (error) {
+        console.error("Error deleting project:", error);
+        alert("Failed to delete project. Please try again.");
+      }
     }
   };
+
   return (
     <div className="min-h-screen bg-green-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
