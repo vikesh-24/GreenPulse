@@ -7,7 +7,7 @@ import {
     updateGoal
 } from "../controllers/goalController.js"; // Import the Goal controller
 
-const goalRouter = express.Router(); 
+const goalRouter = express.Router();
 
 // Route to get all goals
 goalRouter.get("/getgoal", getAllGoals);

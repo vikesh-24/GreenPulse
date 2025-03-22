@@ -46,7 +46,9 @@ const ProjectList = () => {
                                 <p className="mt-1 text-sm text-gray-500">Start Date: {new Date(project.startDate).toLocaleDateString()}</p>
                                 <p className="text-sm text-gray-500">End Date: {new Date(project.endDate).toLocaleDateString()}</p>
                             </div>
+                            
                         ))}
+                        
                     </div>
                 ) : (
                     <p className="text-center text-gray-500 text-lg mt-10">No projects found</p>

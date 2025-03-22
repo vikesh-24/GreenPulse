@@ -1,20 +1,26 @@
 import Goal from "../models/goal.js"; // Import the Goal model
 
 // Create Goal
+
 export const addGoal = async (req, res) => {
     try {
-        const {goalType, targetValue, startDate, endDate, createdBy } = req.body;
+        // Log the received data
+        console.log('Received goal data:', req.body);
+
+        const { goalType, targetValue, currentValue, startDate, endDate, status } = req.body;
 
         // Ensure startDate and endDate are properly formatted
         const formattedStartDate = startDate ? new Date(startDate) : undefined;
         const formattedEndDate = endDate ? new Date(endDate) : undefined;
 
+        // Create the goal in the database
         const goal = await Goal.create({
             goalType,
             targetValue,
-            startDate: formattedStartDate, // Ensure startDate is a valid Date object
-            endDate: formattedEndDate, // Ensure endDate is a valid Date object
-            createdBy
+            currentValue,  // Include currentValue here
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
+            status
         });
 
         if (goal) {
@@ -23,7 +29,7 @@ export const addGoal = async (req, res) => {
             return res.status(400).json({ message: "Error when adding goal" });
         }
     } catch (error) {
-        console.error(error.message);
+        console.error('Error during goal creation:', error.message);
         return res.status(500).json({ message: "Error during adding goal" });
     }
 };

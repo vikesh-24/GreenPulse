@@ -15,6 +15,7 @@ import MockPurchase from './components/DonorManagement/MockPurchase';
 import Donors from './components/DonorManagement/Donors';
 
 import Profile from './components/usermanagement/Profile';
+import ViewGoals from './components/GoalManagement/ViewGoals';
 
 const App = () => {
     return (
@@ -44,6 +45,7 @@ const App = () => {
                     <Route path="/donate/add" element={<AddDonor />} />
                     <Route path="/mock-purchase" element={<MockPurchase />} />
                     <Route path="/donors" element={<Donors />} />
+                    <Route path="/viewGoals" element={<ViewGoals />} />
 
                     {/* Admin dashboard */}
                    
