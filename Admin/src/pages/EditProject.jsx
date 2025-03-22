@@ -25,6 +25,7 @@ const EditProject = () => {
     // Fetch project data from the API
     const fetchProject = async () => {
         try {
+            console.log(id);
             const response = await axios.get(`http://localhost:5000/api/projects/project/${id}`);
             const data = response.data;
 

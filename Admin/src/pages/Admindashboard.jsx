@@ -31,7 +31,7 @@ const AdminDashboard = () => {
                         </li>
                         <li>
                             <Link 
-                                to="/admin/projects" 
+                                to="/adminprojectlist" 
                                 className="block px-6 py-2 hover:bg-green-700 transition"
                             >
                                 Projects
