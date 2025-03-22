@@ -50,7 +50,7 @@ const AddProject = () => {
             setGoals('');
             setStatus('Not Started');
 
-            navigate('/');
+            navigate('/adminprojectlist');
         } catch (error) {
             console.error('Error adding project:', error);
         }
@@ -139,7 +139,9 @@ const AddProject = () => {
                     <button
                         type="submit"
                         className="w-full h-12 bg-green-500 text-white text-lg font-semibold rounded-md hover:bg-green-700 transition"
-                        onClick={navigate('/adminprojectlist')}
+                        // onClick={navigate('/adminprojectlist')
+                            
+                        // }
                     >
                         Add Project
                     </button>
