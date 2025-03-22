@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 const Register = () => {
   const [formData, setFormData] = useState({
     firstname: "",
@@ -58,7 +59,9 @@ const Register = () => {
         },
       });
 
-      setSuccess("Registration successful! Redirecting to login...");
+      if(response.status === 200) {
+        setSuccess("Registration successful!");
+      }
       setTimeout(() => {
         navigate("/login"); // Redirect to login page after a successful registration
       }, 2000);

@@ -5,7 +5,7 @@ import heroBg from '../assets/hero.png';
 
 const Home = () => {
     return (
-        <div className="min-h-screen bg-green-50 flex flex-col items-center justify-center text-center p-6">
+        <div className="min-h-screen bg-green-50 flex flex-col items-center justify-center text-center p-6 relative w-full">
             {/* Hero Section */}
             <div 
                 className="relative h-screen flex items-center justify-center bg-cover bg-center w-full" 

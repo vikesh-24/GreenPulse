@@ -1,17 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {Eye , EyeOff} from "lucide-react";
 
 const Login = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [showpassword,setShowPassword] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,47 +12,29 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
-    if (!formData.email || !formData.password) {
-      setError("Both fields are required!");
-      return;
-    }
-
-    if (!formData.email.includes("@")) {
-      setError("Invalid email format!");
-      return;
-    }
-
-    setError("");
-
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/users/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post("http://localhost:5000/api/users/login", formData, {
+        headers: { "Content-Type": "application/json" },
+      });
 
-      const data = response.data;
+      console.log("Login Response:", response.data); // Debugging
 
-      // If login is successful, store the token and navigate based on role
       if (response.status === 200) {
-        // Store the token in localStorage (or use cookies)
-        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("authToken", response.data.token);
+        localStorage.setItem("firstName", response.data.firstname); // Ensure firstName is stored before navigation
 
-        // Navigate based on role
-        switch (data.role) {
+        // Trigger event to update Header immediately
+        window.dispatchEvent(new Event("storage"));
+
+        switch (response.data.role) {
           case "user":
-            navigate("/");
+            window.location.href = "/";
             break;
           case "doner":
-            navigate("/doner-dashboard");
+            window.location.href = "/doner-dashboard";
             break;
           case "admin":
-            navigate("/admin-dashboard");
+            window.location.href = "/admin-dashboard";
             break;
           default:
             setError("Invalid role");
@@ -72,58 +46,48 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-green-50 flex items-center justify-center px-6">
-      <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h2 className="text-2xl font-bold text-center text-green-800">Login</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-800 to-green-300 px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold text-center text-green-800 mb-6">Login</h2>
+        
+        {error && <p className="text-red-600 text-sm text-center mb-4">{error}</p>}
 
-        {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="mt-6">
-          <div className="mb-4">
-            <label className="block text-gray-700 font-medium">Email</label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
               name="email"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500"
-              placeholder="Enter your email"
+              required
+              className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
             />
           </div>
 
-          <div className="mb-4 relative">
-  <label className="block text-gray-700 font-medium">Password</label>
-  <div className="relative">
-    <input
-      type={showpassword ? "text" : "password"}
-      name="password"
-      value={formData.password}
-      onChange={handleChange}
-      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 pr-10"
-      placeholder="Enter your password"
-    />
-    <div
-      className="absolute right-3 top-3 cursor-pointer text-gray-500"
-      onClick={() => setShowPassword(!showpassword)}
-    >
-      {showpassword ? <Eye /> : <EyeOff />}
-    </div>
-  </div>
-</div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500"
+            />
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 rounded-lg transition"
-          >
+            className="w-full py-2 px-4 bg-green-800 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition">
             Login
           </button>
         </form>
 
-        <p className="text-gray-600 text-sm text-center mt-4">
-          Don't have an account?{" "}
-          <a href="/register" className="text-green-700 font-medium">
-            Register
-          </a>
+        <p className="text-sm text-center text-gray-600 mt-4">
+          Don't have an account? <a href="/register" className="text-green-700 hover:underline">Register here</a>
         </p>
       </div>
     </div>
