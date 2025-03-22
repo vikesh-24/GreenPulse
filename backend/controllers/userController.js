@@ -125,7 +125,6 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   const userId = req.params.id;
-  console.log(userId);
   try {
     const user = await User.findById(userId);
     if (user) {
