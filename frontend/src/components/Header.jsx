@@ -66,8 +66,8 @@ const Header = () => {
                   </button>
                   {dropdownOpen && (
                     <ul className="absolute right-0 mt-2 w-40 bg-white text-black shadow-xl rounded-lg overflow-hidden border border-gray-200">
-                      <li><button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-green-100 transition">Edit profile</button></li>
-                      <li><button onClick={handleEditProfile} className="block w-full text-left px-4 py-2 hover:bg-green-100 transition">LogOut</button></li>
+                      <li><button onClick={handleEditProfile} className="block w-full text-left px-4 py-2 hover:bg-green-100 transition">Edit profile</button></li>
+                      <li><button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-green-100 transition">LogOut</button></li>
 
                     </ul>
                   )}
