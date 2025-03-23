@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -33,6 +34,13 @@ const Header = () => {
     window.location.href = "/login"; // Redirect to login
   };
 
+  const navigate = useNavigate();
+
+  const handleEditProfile = () => {
+    setDropdownOpen(false);
+    navigate("/profile"); // Navigate to Profile page
+  };
+
   return (
     <header className="mx-auto w-full max-w-[1320px] py-2 bg-gradient-to-r from-green-800 to-green-300 text-white px-4 shadow-lg relative top-2 z-50 rounded-full">
       <div className="max-w-6xl mx-auto flex justify-between items-center relative">
@@ -59,6 +67,8 @@ const Header = () => {
                   {dropdownOpen && (
                     <ul className="absolute right-0 mt-2 w-40 bg-white text-black shadow-xl rounded-lg overflow-hidden border border-gray-200">
                       <li><button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-green-100 transition">Logout</button></li>
+                      <li><button onClick={handleEditProfile} className="block w-full text-left px-4 py-2 hover:bg-green-100 transition">Edit profile</button></li>
+
                     </ul>
                   )}
                 </>
