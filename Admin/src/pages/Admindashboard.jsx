@@ -23,7 +23,7 @@ const AdminDashboard = () => {
                     <ul className="space-y-2">
                         <li>
                             <Link 
-                                to="/admin/dashboard" 
+                                to="/" 
                                 className="block px-6 py-2 hover:bg-green-700 transition"
                             >
                                 Dashboard
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
                         </li>
                         <li>
                             <Link 
-                                to="/admin/users" 
+                                to="/profile" 
                                 className="block px-6 py-2 hover:bg-green-700 transition"
                             >
                                 Users
@@ -51,6 +51,14 @@ const AdminDashboard = () => {
                                 className="block px-6 py-2 hover:bg-green-700 transition"
                             >
                                 Donations
+                            </Link>
+                        </li>
+                        <li>
+                            <Link 
+                                to="/addGoal" 
+                                className="block px-6 py-2 hover:bg-green-700 transition"
+                            >
+                                Set Goals
                             </Link>
                         </li>
                         <li>
