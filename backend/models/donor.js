@@ -22,6 +22,11 @@ const donorSchema = new mongoose.Schema({
     phonenumber:{
         type:String,
         required:true
+    },
+    status:{
+        type:String,
+        enum:['refunded','not-refunded','pending'],
+        default:'not-refunded'
     }
 }); 
 

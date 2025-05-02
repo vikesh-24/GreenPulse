@@ -13,6 +13,8 @@ import Users from './pages/Users';
 import Settings from './pages/Settings';
 import Donations from './pages/Donations';
 import { Route, Routes } from 'react-router-dom';
+import NotFound from './pages/NotFound';
+import DonationActions from './pages/DonationActions';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -30,6 +32,8 @@ function App() {
         <Route path='/admin/users' element={<Users />} />
         <Route path='/settings' element={<Settings />} />
         <Route path='/donations' element={<Donations />} />
+        <Route path='/donationactions' element={<DonationActions/>} />
+        <Route path='*' element={<NotFound/>}/>
       </Routes>
     </div>
   );

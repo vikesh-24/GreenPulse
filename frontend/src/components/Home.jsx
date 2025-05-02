@@ -9,7 +9,7 @@ const Home = () => {
         <div className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center text-center p-6 relative w-full overflow-hidden">
             {/* Hero Section with Video Background */}
             <div 
-                className="relative h-screen flex items-center justify-center bg-cover bg-center w-full transform transition-all duration-700 hover:scale-105" 
+                className="relative h-screen flex items-center justify-center bg-cover bg-center w-full transform transition-all duration-700 hover:scale-105 rounded-lg overflow-hidden" 
             >
                 {/* Background video */}
                 <video

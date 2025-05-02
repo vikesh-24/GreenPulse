@@ -42,6 +42,11 @@ const AdminSidebar = () => {
           <span>Donations</span>
         </Link>
 
+        <Link to="/donationactions" className="flex items-center space-x-2 text-lg hover:bg-green-700 p-2 rounded">
+          <Settings2 className="w-6 h-6" />
+          <span>Refund Donations</span>
+        </Link>
+
         {/* Analytics Dashboard Link */}
         <Link to="/analytics" className="flex items-center space-x-2 text-lg hover:bg-green-700 p-2 rounded">
           <BarChart2 className="w-6 h-6" />
