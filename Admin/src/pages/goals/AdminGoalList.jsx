@@ -1,9 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { 
+    Target, 
+    Plus, 
+    Edit2, 
+    Trash2, 
+    Loader2,
+    CheckCircle2,
+    XCircle,
+    Calendar,
+    TrendingUp,
+    BarChart2,
+    Clock,
+    Sparkles
+} from 'lucide-react';
 
 const ViewGoals = () => {
   const [goals, setGoals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -12,6 +29,7 @@ const ViewGoals = () => {
 
   const fetchGoals = async () => {
     try {
+      setLoading(true);
       const response = await axios.get("http://localhost:5000/api/goals/getgoal");
       console.log("Fetched goals:", response.data);
 
@@ -23,6 +41,9 @@ const ViewGoals = () => {
       }
     } catch (error) {
       console.error("Error fetching goals:", error);
+      setError("Failed to load goals. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,68 +56,153 @@ const ViewGoals = () => {
       try {
         await axios.delete(`http://localhost:5000/api/goals/delete/${id}`);
         setGoals(goals.filter((goal) => goal._id !== id));
+        setSuccessMessage("Goal deleted successfully!");
+        setTimeout(() => setSuccessMessage(null), 3000);
       } catch (error) {
         console.error("Error deleting goal:", error);
-        alert("Failed to delete goal. Please try again.");
+        setError("Failed to delete goal. Please try again.");
       }
     }
   };
 
   return (
-    <div className="min-h-screen bg-green-50 py-10 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-gray-900">Goal List</h2>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+          <div>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+              Goal Management
+            </h2>
+            <p className="text-gray-600 mt-2">Track and manage your goals</p>
+          </div>
           <button
-            className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition"
-            onClick={() => {
-              navigate("/addGoal");
-            }}
+            className="mt-4 md:mt-0 px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center space-x-2"
+            onClick={() => navigate("/addGoal")}
           >
-            ➕ Add Goal
+            <Plus className="w-5 h-5" />
+            <span>Add Goal</span>
           </button>
         </div>
 
-        {goals.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center animate-fade-in">
+            <CheckCircle2 className="w-5 h-5 text-green-500 mr-3" />
+            <p className="text-green-700">{successMessage}</p>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center">
+            <XCircle className="w-5 h-5 text-red-500 mr-3" />
+            <p className="text-red-700">{error}</p>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="w-12 h-12 text-green-500 animate-spin" />
+          </div>
+        ) : goals.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {goals.map((goal) => (
               <div
                 key={goal._id}
-                className="bg-white shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow border border-gray-200"
+                className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 border border-gray-100"
               >
-                <h3 className="text-xl font-semibold text-green-600">{goal.goalType}</h3>
-                <p className="text-gray-700 mt-2">Target Value: {goal.targetValue}</p>
-                <p className="text-gray-700 mt-2">Current Value: {goal.currentValue}</p>
-                <p className="mt-4 text-sm text-gray-500">
-                  Status: <span className="font-medium text-green-500">{goal.status}</span>
-                </p>
-                <p className="mt-1 text-sm text-gray-500">
-                  Start Date: {new Date(goal.startDate).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  End Date: {new Date(goal.endDate).toLocaleDateString()}
-                </p>
+                {/* Goal Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center text-white">
+                      <Target className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-800">{goal.goalType}</h3>
+                      <p className="text-sm text-gray-500">ID: {goal._id.slice(-6)}</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleEdit(goal._id)}
+                      className="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                      title="Edit Goal"
+                    >
+                      <Edit2 className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(goal._id)}
+                      className="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors"
+                      title="Delete Goal"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
 
-                {/* Buttons Section */}
-                <div className="mt-4 flex justify-between">
-                  <button
-                    onClick={() => handleEdit(goal._id)}
-                    className="px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-lg shadow-md hover:bg-green-700 transition"
-                  >
-                    ✏️ Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(goal._id)}
-                    className="px-4 py-2 text-sm font-semibold text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 transition"
-                  >
-                    🗑️ Delete
-                  </button>
+                {/* Goal Details */}
+                <div className="space-y-3">
+                  <div className="flex items-center text-gray-600">
+                    <TrendingUp className="w-4 h-4 mr-2 text-blue-500" />
+                    <span className="text-sm">Target: {goal.targetValue}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <BarChart2 className="w-4 h-4 mr-2 text-purple-500" />
+                    <span className="text-sm">Current: {goal.currentValue}</span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Calendar className="w-4 h-4 mr-2 text-indigo-500" />
+                    <span className="text-sm">
+                      Start: {new Date(goal.startDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center text-gray-600">
+                    <Clock className="w-4 h-4 mr-2 text-pink-500" />
+                    <span className="text-sm">
+                      End: {new Date(goal.endDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Goal Status */}
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Sparkles className="w-4 h-4 mr-2 text-gray-400" />
+                      <span className="text-sm text-gray-600">Status</span>
+                    </div>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      goal.status === 'completed' 
+                        ? 'bg-green-100 text-green-800' 
+                        : goal.status === 'in-progress'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {goal.status.charAt(0).toUpperCase() + goal.status.slice(1)}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500 text-lg mt-10">No goals found</p>
+          <div className="text-center py-12">
+            <div className="bg-white/80 backdrop-blur-lg rounded-xl p-8 max-w-md mx-auto">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Target className="w-8 h-8 text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">No Goals Found</h3>
+              <p className="text-gray-600 mb-4">Get started by adding your first goal</p>
+              <button
+                onClick={() => navigate("/addGoal")}
+                className="px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg hover:shadow-lg transition-all duration-300"
+              >
+                Add Goal
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
