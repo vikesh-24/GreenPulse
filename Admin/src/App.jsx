@@ -11,6 +11,7 @@ import AdminGoal from './pages/goals/AdminGoalList';
 import EditGoal from './pages/goals/EditGoal';
 import Users from './pages/Users';
 import Settings from './pages/Settings';
+import Donations from './pages/Donations';
 import { Route, Routes } from 'react-router-dom';
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path='/' element={<Admindashboard />} />
+        <Route path='/admin' element={<Admindashboard />} />
         <Route path='/adminprojectlist' element={<Adminprojectlist />} />
         <Route path='/editproject/:id' element={<Editprojects />} />
         <Route path='/addproject' element={<AddProject />} />
@@ -28,6 +29,7 @@ function App() {
         <Route path='/editGoal/:id' element={<EditGoal />} />
         <Route path='/admin/users' element={<Users />} />
         <Route path='/settings' element={<Settings />} />
+        <Route path='/donations' element={<Donations />} />
       </Routes>
     </div>
   );

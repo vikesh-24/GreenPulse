@@ -37,6 +37,10 @@ const AdminSidebar = () => {
           <Settings2 className="w-6 h-6" />
           <span>Settings</span>
         </Link>
+        <Link to="/donations" className="flex items-center space-x-2 text-lg hover:bg-green-700 p-2 rounded">
+          <Settings2 className="w-6 h-6" />
+          <span>Donations</span>
+        </Link>
 
         {/* Analytics Dashboard Link */}
         <Link to="/analytics" className="flex items-center space-x-2 text-lg hover:bg-green-700 p-2 rounded">

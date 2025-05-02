@@ -92,7 +92,7 @@ function MockPurchase() {
         </div>
 
         {/* Payment Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white rounded-2xl shadow-xl p-8 flex items-center justify-center">
           {/* Success Message */}
           {success && (
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center">

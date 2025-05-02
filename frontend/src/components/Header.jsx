@@ -100,6 +100,16 @@ const Header = () => {
                   About
                 </Link>
               </li>
+              <li>
+                <Link 
+                  to="/donors" 
+                  className={`block py-2 md:py-0 hover:text-green-500 transition-colors ${
+                    scrolled ? 'text-gray-700' : 'text-white'
+                  }`}
+                >
+                  Donations
+                </Link>
+              </li>
 
               {/* Profile Dropdown */}
               <li className="relative">
