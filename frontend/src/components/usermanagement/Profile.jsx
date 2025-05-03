@@ -10,20 +10,16 @@ import {
   Save, 
   Loader2,
   CheckCircle2,
-  XCircle,
-  Camera
+  XCircle
 } from "lucide-react";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [user, setUser] = useState(null); // Store user data
+  const [error, setError] = useState(""); // Handle errors
+  const [loading, setLoading] = useState(true); // Loading state
+  const [isEditing, setIsEditing] = useState(false); // Toggle edit mode
+  const [formData, setFormData] = useState({}); // Form data for edits
   const [success, setSuccess] = useState("");
-  const [photoPreview, setPhotoPreview] = useState(null);
-  const [photoFile, setPhotoFile] = useState(null);
-  const [isPhotoUploading, setIsPhotoUploading] = useState(false);
 
   // Function to decode the JWT token
   const decodeJwt = (token) => {
@@ -143,7 +139,7 @@ const Profile = () => {
 
   // Handle form submission (Save Changes)
   const handleSaveChanges = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent default form submission
     setError("");
     setSuccess("");
 
@@ -167,11 +163,11 @@ const Profile = () => {
       );
 
       setUser(response.data.data);
-      setIsEditing(false);
+      setIsEditing(false); // Exit edit mode
       setSuccess("Profile updated successfully!");
       setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
-      console.error("Error saving changes:", err);
+      console.error("Error saving changes:", err); // Log the error if the request fails
       setError("Failed to save changes. Please try again.");
     }
   };
@@ -230,36 +226,8 @@ const Profile = () => {
           {!isEditing ? (
             <div className="space-y-6">
               <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <div className="w-24 h-24 rounded-full overflow-hidden bg-green-100 flex items-center justify-center">
-                    {photoPreview ? (
-                      <img 
-                        src={photoPreview} 
-                        alt="Profile" 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <User className="w-12 h-12 text-green-600" />
-                    )}
-                  </div>
-                  <label 
-                    htmlFor="photo-upload" 
-                    className={`absolute bottom-0 right-0 bg-green-600 text-white p-2 rounded-full cursor-pointer hover:bg-green-700 transition-colors ${isPhotoUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  >
-                    {isPhotoUploading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Camera className="w-4 h-4" />
-                    )}
-                    <input
-                      id="photo-upload"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={handlePhotoUpload}
-                      disabled={isPhotoUploading}
-                    />
-                  </label>
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                  <User className="w-8 h-8 text-green-600" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">{user.firstname} {user.lastname}</h2>

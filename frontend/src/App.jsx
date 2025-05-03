@@ -2,9 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './components/Home'; // Create a Home component for the root path
 import ProjectList from './components/projectManagement/ProjectList';
-
-
-
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Register from './components/usermanagement/Register';
@@ -13,9 +10,9 @@ import About from './components/about';
 import AddDonor from './components/DonorManagement/AddDonor';
 import MockPurchase from './components/DonorManagement/MockPurchase';
 import Donors from './components/DonorManagement/Donors';
-
 import Profile from './components/usermanagement/Profile';
 import ViewGoals from './components/GoalManagement/ViewGoals';
+import NotFound from './components/NotFound';
 
 const App = () => {
     return (
@@ -46,6 +43,7 @@ const App = () => {
                     <Route path="/mock-purchase" element={<MockPurchase />} />
                     <Route path="/donors" element={<Donors />} />
                     <Route path="/viewGoals" element={<ViewGoals />} />
+                    <Route path='*' element={<NotFound/>}/>
 
                     {/* Admin dashboard */}
                    

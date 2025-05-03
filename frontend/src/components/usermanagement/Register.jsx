@@ -9,8 +9,7 @@ import {
   CheckCircle2, 
   XCircle,
   ArrowRight,
-  Loader2,
-  Camera
+  Loader2
 } from "lucide-react";
 
 const Register = () => {
@@ -27,8 +26,6 @@ const Register = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [photoPreview, setPhotoPreview] = useState(null);
-  const [photoFile, setPhotoFile] = useState(null);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -54,19 +51,6 @@ const Register = () => {
       case 4: return "bg-green-500";
       default: return "bg-gray-200";
     }
-  };
-
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Preview the image
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPhotoPreview(reader.result);
-    };
-    reader.readAsDataURL(file);
-    setPhotoFile(file);
   };
 
   const handleSubmit = async (e) => {
@@ -95,32 +79,16 @@ const Register = () => {
     }
 
     try {
-      // First, register the user
       const response = await axios.post("http://localhost:5000/api/users/register", formData, {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (response.status === 200 && photoFile) {
-        // If registration is successful and there's a photo, upload it
-        const userId = response.data.data._id;
-        const photoFormData = new FormData();
-        photoFormData.append('photo', photoFile);
-
-        await axios.post(
-          `http://localhost:5000/api/users/upload-photo/${userId}`,
-          photoFormData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data"
-            }
-          }
-        );
+      if(response.status === 200) {
+        setSuccess("Registration successful! Redirecting to login...");
+        setTimeout(() => navigate("/login"), 2000);
       }
-
-      setSuccess("Registration successful! Redirecting to login...");
-      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed. Try again.");
+      setError(err.response?.data?.error || "Registration failed. Try again.");
     } finally {
       setLoading(false);
     }
@@ -153,36 +121,6 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Photo Upload */}
-            <div className="flex justify-center">
-              <div className="relative">
-                <div className="w-24 h-24 rounded-full overflow-hidden bg-green-100 flex items-center justify-center">
-                  {photoPreview ? (
-                    <img 
-                      src={photoPreview} 
-                      alt="Profile Preview" 
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <User className="w-12 h-12 text-green-600" />
-                  )}
-                </div>
-                <label 
-                  htmlFor="photo-upload" 
-                  className="absolute bottom-0 right-0 bg-green-600 text-white p-2 rounded-full cursor-pointer hover:bg-green-700 transition-colors"
-                >
-                  <Camera className="w-4 h-4" />
-                  <input
-                    id="photo-upload"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handlePhotoChange}
-                  />
-                </label>
-              </div>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">First Name</label>

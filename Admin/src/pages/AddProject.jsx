@@ -1,29 +1,52 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { 
+  Plus, 
+  Calendar, 
+  Target, 
+  FileText, 
+  ListChecks,
+  ArrowLeft,
+  Loader2,
+  CheckCircle2,
+  XCircle
+} from 'lucide-react';
 
 const AddProject = () => {
-    const [name, setName] = useState('');
-    const [type, setType] = useState('');
-    const [description, setDescription] = useState('');
-    const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
-    const [endDate, setEndDate] = useState('');
-    const [goals, setGoals] = useState('');
-    const [status, setStatus] = useState('Not Started');
+    const [formData, setFormData] = useState({
+        name: '',
+        type: '',
+        description: '',
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: '',
+        goals: '',
+        status: 'Not Started'
+    });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
     const navigate = useNavigate();
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setError(null);
+
         try {
             const projectData = {
-                name,
-                type,
-                description,
-                startDate: new Date(startDate),
-                endDate: new Date(endDate),
-                goals: goals.split(',').map(goal => goal.trim()),
-                status
+                ...formData,
+                startDate: new Date(formData.startDate),
+                endDate: new Date(formData.endDate),
+                goals: formData.goals.split(',').map(goal => goal.trim())
             };
 
             const response = await fetch('http://localhost:5000/api/projects/addproject', {
@@ -38,114 +61,208 @@ const AddProject = () => {
                 throw new Error('Failed to add project');
             }
 
-            const data = await response.json();
-            console.log('Project added:', data);
-
-            // Clear the form
-            setName('');
-            setType('');
-            setDescription('');
-            setStartDate(new Date().toISOString().split('T')[0]);
-            setEndDate('');
-            setGoals('');
-            setStatus('Not Started');
-
-            navigate('/adminprojectlist');
+            setSuccess(true);
+            setTimeout(() => {
+                navigate('/adminprojectlist');
+            }, 1500);
         } catch (error) {
             console.error('Error adding project:', error);
+            setError('Failed to add project. Please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-
-       
-        <div className="min-h-screen bg-green-50 flex items-center justify-center px-6">
-            <div className="max-w-2xl w-full bg-white shadow-lg rounded-lg p-8">
-                <h2 className="text-3xl font-bold text-gray-900 text-center mb-6">Add Project</h2>
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div>
-                        <label className="block text-lg font-medium text-gray-700">Name:</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            className="w-full h-12 px-4 py-3 border rounded-md text-lg focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-lg font-medium text-gray-700">Type:</label>
-                        <input
-                            type="text"
-                            value={type}
-                            onChange={(e) => setType(e.target.value)}
-                            className="w-full h-12 px-4 py-3 border rounded-md text-lg focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-lg font-medium text-gray-700">Description:</label>
-                        <textarea
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            className="w-full h-24 px-4 py-3 border rounded-md text-lg focus:ring-2 focus:ring-indigo-500"
-                            required
-                        ></textarea>
-                    </div>
-                    <div>
-                        <label className="block text-lg font-medium text-gray-700">Start Date:</label>
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                            className="w-full h-12 px-4 py-3 border rounded-md text-lg focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-lg font-medium text-gray-700">End Date:</label>
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                            className="w-full h-12 px-4 py-3 border rounded-md text-lg focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-lg font-medium text-gray-700">Goals (comma-separated):</label>
-                        <input
-                            type="text"
-                            value={goals}
-                            onChange={(e) => setGoals(e.target.value)}
-                            className="w-full h-12 px-4 py-3 border rounded-md text-lg focus:ring-2 focus:ring-indigo-500"
-                            required
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-lg font-medium text-gray-700">Status:</label>
-                        <select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            className="w-full h-12 px-4 py-3 border rounded-md text-lg focus:ring-2 focus:ring-indigo-500"
-                            required
-                        >
-                            <option value="Not Started">Not Started</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
-                            <option value="On Hold">On Hold</option>
-                        </select>
-                    </div>
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-10 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-8">
                     <button
-                        type="submit"
-                        className="w-full h-12 bg-green-500 text-white text-lg font-semibold rounded-md hover:bg-green-700 transition"
-                        // onClick={navigate('/adminprojectlist')
-                            
-                        // }
+                        onClick={() => navigate(-1)}
+                        className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
                     >
-                        Add Project
+                        <ArrowLeft className="w-5 h-5 mr-2" />
+                        Back
                     </button>
-                </form>
+                    <h2 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                        Add New Project
+                    </h2>
+                </div>
+
+                {/* Success Message */}
+                {success && (
+                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center">
+                        <CheckCircle2 className="w-5 h-5 text-green-500 mr-3" />
+                        <p className="text-green-700">Project added successfully!</p>
+                    </div>
+                )}
+
+                {/* Error Message */}
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center">
+                        <XCircle className="w-5 h-5 text-red-500 mr-3" />
+                        <p className="text-red-700">{error}</p>
+                    </div>
+                )}
+
+                {/* Form */}
+                <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Project Name */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Project Name
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <FileText className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                    placeholder="Enter project name"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Project Type */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Project Type
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Target className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="text"
+                                    name="type"
+                                    value={formData.type}
+                                    onChange={handleChange}
+                                    required
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                    placeholder="Enter project type"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Description */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Description
+                            </label>
+                            <textarea
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                required
+                                rows="4"
+                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                placeholder="Enter project description"
+                            />
+                        </div>
+
+                        {/* Dates */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Start Date
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Calendar className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="date"
+                                        name="startDate"
+                                        value={formData.startDate}
+                                        onChange={handleChange}
+                                        required
+                                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    End Date
+                                </label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <Calendar className="h-5 w-5 text-gray-400" />
+                                    </div>
+                                    <input
+                                        type="date"
+                                        name="endDate"
+                                        value={formData.endDate}
+                                        onChange={handleChange}
+                                        required
+                                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Goals */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Goals (comma-separated)
+                            </label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <ListChecks className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="text"
+                                    name="goals"
+                                    value={formData.goals}
+                                    onChange={handleChange}
+                                    required
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                    placeholder="Enter project goals"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Status */}
+                        <div className="space-y-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                                Status
+                            </label>
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                            >
+                                <option value="Not Started">Not Started</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="flex justify-end">
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <Plus className="w-5 h-5" />
+                                )}
+                                <span>{loading ? 'Adding...' : 'Add Project'}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
