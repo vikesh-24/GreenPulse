@@ -183,41 +183,61 @@ const Register = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">First Name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    name="firstname"
-                    value={formData.firstname}
-                    onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                    placeholder="John"
-                  />
-                </div>
-              </div>
+            <div className="space-y-2">
+  <label className="block text-sm font-medium text-gray-700">First Name</label>
+  <div className="relative">
+    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <User className="h-5 w-5 text-gray-400" />
+    </div>
+    <input
+      type="text"
+      name="firstname"
+      value={formData.firstname}
+      onChange={(e) => {
+        const value = e.target.value;
+        // Check if the value contains only letters and spaces
+        if (/[^a-zA-Z\s]/.test(value)) {
+          // If it contains numbers or special characters, alert the user and prevent the input
+          alert("Please enter a valid first name without numbers or special characters.");
+        } else {
+          // If it's valid, update the state
+          setFormData({ ...formData, firstname: value });
+        }
+      }}
+      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+      placeholder="John"
+    />
+  </div>
+</div>
 
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Last Name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <User className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    type="text"
-                    name="lastname"
-                    value={formData.lastname}
-                    onChange={handleChange}
-                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                    placeholder="Doe"
-                  />
-                </div>
-              </div>
-            </div>
+
+<div className="space-y-2">
+  <label className="block text-sm font-medium text-gray-700">Last Name</label>
+  <div className="relative">
+    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <User className="h-5 w-5 text-gray-400" />
+    </div>
+    <input
+      type="text"
+      name="lastname"
+      value={formData.lastname}
+      onChange={(e) => {
+        const value = e.target.value;
+        // Check if the value contains only letters and spaces
+        if (/[^a-zA-Z\s]/.test(value)) {
+          // If it contains numbers or special characters, alert the user and prevent the input
+          alert("Please enter a valid last name without numbers or special characters.");
+        } else {
+          // If it's valid, update the state
+          setFormData({ ...formData, lastname: value });
+        }
+      }}
+      className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+      placeholder="Doe"
+    />
+  </div>
+</div>
+
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">Email</label>
