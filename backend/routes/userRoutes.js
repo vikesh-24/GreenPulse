@@ -6,9 +6,11 @@ import {
   getUser,
   updateUser,
   deleteUser,
-  logoutUser
+  logoutUser,
+  uploadPhoto
 } from "../controllers/userController.js";
 import authenticateUser from "../middleware/authenticateUser.js"; // Import the middleware
+import upload from "../middleware/uploadMiddleware.js";
 
 const userRouter = express.Router();
 
@@ -19,6 +21,7 @@ userRouter.post("/login", loginUser);
 userRouter.put("/user/:id", updateUser);
 userRouter.delete("/delete/:id", deleteUser);
 userRouter.get("/logout", logoutUser);
+userRouter.post("/upload-photo/:id", authenticateUser, upload.single('photo'), uploadPhoto);
 
 // Protect the profile route with the authentication middleware
 userRouter.get("/user/me", authenticateUser, async (req, res) => {

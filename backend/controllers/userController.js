@@ -1,10 +1,12 @@
 import { User } from "../models/user.js"; 
 import jwt from "jsonwebtoken"; 
 import bcrypt from "bcrypt";
+import path from "path";
+import fs from "fs/promises";
 
 export const registerUser = async (req, res) => {
   try {
-    const { firstname, lastname, email, age, password,role } = req.body;
+    const { firstname, lastname, email, age, password, role } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -18,17 +20,22 @@ export const registerUser = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Create user with photo field
     const user = await User.create({
       firstname,
       lastname,
       email,
       age,
       role,
-      password: hashedPassword
+      password: hashedPassword,
+      photo: '' // Initialize with empty string
     });
 
     if (user) {
-      return res.status(201).json({ message: "User registered successfully", data: user });
+      return res.status(201).json({ 
+        message: "User registered successfully", 
+        data: user 
+      });
     }
 
   } catch (error) {
@@ -142,4 +149,43 @@ export const deleteUser = async (req, res) => {
 export const logoutUser = async (req, res) => {
   res.setHeader("Authorization", "");
   return res.status(200).json({ message: "User Logged Out Successfully" });
+};
+
+export const uploadPhoto = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // If user already has a photo, you might want to delete the old file
+    // This is optional and depends on your requirements
+    if (user.photo) {
+      const oldPhotoPath = path.join(__dirname, '..', user.photo);
+      try {
+        await fs.unlink(oldPhotoPath);
+      } catch (error) {
+        console.error('Error deleting old photo:', error);
+        // Continue with the update even if old photo deletion fails
+      }
+    }
+
+    // Update user's photo field with the file path
+    user.photo = `/uploads/${req.file.filename}`;
+    await user.save();
+
+    return res.status(200).json({ 
+      message: "Photo uploaded successfully", 
+      data: user 
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: "Error uploading photo" });
+  }
 };

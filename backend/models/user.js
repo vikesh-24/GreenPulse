@@ -15,14 +15,16 @@ const userSchema = new mongoose.Schema({
         unique:true,
         include:'@'
     },
-
+    photo: {
+        type: String,
+        default: '' // Default empty string for no photo
+    },
     role: { 
         type: String, 
         enum: ["user", "doner", "admin"],
         default: "user",  // Default role set to "user"
         required: true 
     },
-
     password:{
         type:String,
         required:true
@@ -31,7 +33,6 @@ const userSchema = new mongoose.Schema({
         type:Number,
         required:true
     }
-
 }) 
 
 export const User = mongoose.model("User",userSchema);
