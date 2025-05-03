@@ -43,7 +43,7 @@ const Login = () => {
             window.location.href = "/doner-dashboard";
             break;
           case "admin":
-            window.location.href = "http://localhost:5174/admin";
+            window.location.href = "http://localhost:5173/admin";
             break;
           default:
             setError("Invalid role");

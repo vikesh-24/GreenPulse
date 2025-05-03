@@ -12,6 +12,7 @@ import EditGoal from './pages/goals/EditGoal';
 import Users from './pages/Users';
 import Settings from './pages/Settings';
 import Donations from './pages/Donations';
+import Analytics from './pages/Analytics';
 import { Route, Routes } from 'react-router-dom';
 import NotFound from './pages/NotFound';
 import DonationActions from './pages/DonationActions';
@@ -33,6 +34,7 @@ function App() {
         <Route path='/settings' element={<Settings />} />
         <Route path='/donations' element={<Donations />} />
         <Route path='/donationactions' element={<DonationActions/>} />
+        <Route path='/analytics' element={<Analytics />} />
         <Route path='*' element={<NotFound/>}/>
       </Routes>
     </div>

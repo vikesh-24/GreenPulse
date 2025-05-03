@@ -111,7 +111,7 @@ function MockPurchase() {
 
           {/* Donation Amount */}
           <div className="mb-6 p-4 bg-green-50 rounded-xl text-center">
-            <p className="text-2xl font-bold text-green-600">${donorData.amount}</p>
+            <p className="text-2xl font-bold text-green-600"> RS.{donorData.amount}</p>
             <p className="text-gray-600">Donation Amount</p>
           </div>
 

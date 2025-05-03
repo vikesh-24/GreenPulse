@@ -11,6 +11,8 @@ import {
     BarChart2,
     Clock
 } from 'lucide-react';
+import { Bar } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
 const AddGoal = () => {
     const [goalType, setGoalType] = useState('');
@@ -36,8 +38,16 @@ const AddGoal = () => {
     // Dynamically update labels based on goalType
     const getLabelForTargetValue = () => {
         switch (goalType) {
-            case 'tree-plantation':
+            case 'trees':
                 return 'Tree Counts';
+            case 'waste':
+                return 'Waste (kg)';
+            case 'water-saved':
+                return 'Water Saved (liters)';
+            case 'plastic-collected':
+                return 'Plastic Collected (kg)';
+            case 'awareness-events':
+                return 'Number of Events';
             case 'carbon-reduction':
                 return 'Tons of Carbon';
             case 'energy-saving':
@@ -49,8 +59,16 @@ const AddGoal = () => {
 
     const getLabelForCurrentValue = () => {
         switch (goalType) {
-            case 'tree-plantation':
+            case 'trees':
                 return 'Current Tree Count';
+            case 'waste':
+                return 'Current Waste Recycled (kg)';
+            case 'water-saved':
+                return 'Current Water Saved (liters)';
+            case 'plastic-collected':
+                return 'Current Plastic Collected (kg)';
+            case 'awareness-events':
+                return 'Current Number of Events';
             case 'carbon-reduction':
                 return 'Current Carbon Reduction (Tons)';
             case 'energy-saving':
@@ -64,6 +82,20 @@ const AddGoal = () => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+
+        // Validate that the end date is after the start date
+        if (new Date(endDate) <= new Date(startDate)) {
+            setError('End date must be after the start date.');
+            setLoading(false);
+            return;
+        }
+
+        // Validate that the target and current values are positive numbers
+        if (targetValue <= 0 || currentValue < 0) {
+            setError('Target and current values must be positive numbers.');
+            setLoading(false);
+            return;
+        }
 
         const goalData = {
             goalType,
@@ -169,7 +201,11 @@ const AddGoal = () => {
                                 required
                             >
                                 <option value="">Select Goal Type</option>
-                                <option value="tree-plantation">Tree Plantation</option>
+                                <option value="trees">Tree Plantation</option>
+                                <option value="waste">Waste Recycled</option>
+                                <option value="water-saved">Water Saved</option>
+                                <option value="plastic-collected">Plastic Collected</option>
+                                <option value="awareness-events">Awareness Events</option>
                                 <option value="carbon-reduction">Carbon Reduction</option>
                                 <option value="energy-saving">Energy Saving</option>
                             </select>

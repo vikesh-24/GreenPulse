@@ -11,6 +11,7 @@ import AddDonor from './components/DonorManagement/AddDonor';
 import MockPurchase from './components/DonorManagement/MockPurchase';
 import Donors from './components/DonorManagement/Donors';
 import Profile from './components/usermanagement/Profile';
+import Settings from './components/usermanagement/Settings';
 import ViewGoals from './components/GoalManagement/ViewGoals';
 import NotFound from './components/NotFound';
 
@@ -34,6 +35,7 @@ const App = () => {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/profile" element={<Profile />} />
+                    <Route path="/settings" element={<Settings />} />
 
                     {/* About page */}
                     <Route path="/about" element={<About />} />

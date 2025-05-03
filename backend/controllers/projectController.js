@@ -3,7 +3,7 @@ import Project from "../models/project.js";
 // Add a new project
 export const addProject = async (req, res) => {
     try {
-        const { name, type, description, startDate, endDate, goals, status } = req.body;
+        const { name, type, description, startDate, endDate, status } = req.body;
 
         const project = await Project.create({
             name,
@@ -11,7 +11,6 @@ export const addProject = async (req, res) => {
             description,
             startDate,
             endDate,
-            goals,
             status
         });
 

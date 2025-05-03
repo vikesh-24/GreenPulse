@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -15,13 +15,17 @@ import {
     Clock,
     Sparkles
 } from 'lucide-react';
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const ViewGoals = () => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const printRef = useRef();
 
   useEffect(() => {
     fetchGoals();
@@ -31,16 +35,12 @@ const ViewGoals = () => {
     try {
       setLoading(true);
       const response = await axios.get("http://localhost:5000/api/goals/getgoal");
-      console.log("Fetched goals:", response.data);
-
       if (response.data.data && Array.isArray(response.data.data)) {
         setGoals(response.data.data);
       } else {
-        console.error("Unexpected data format:", response.data);
         setGoals([]);
       }
     } catch (error) {
-      console.error("Error fetching goals:", error);
       setError("Failed to load goals. Please try again.");
     } finally {
       setLoading(false);
@@ -59,10 +59,34 @@ const ViewGoals = () => {
         setSuccessMessage("Goal deleted successfully!");
         setTimeout(() => setSuccessMessage(null), 3000);
       } catch (error) {
-        console.error("Error deleting goal:", error);
         setError("Failed to delete goal. Please try again.");
       }
     }
+  };
+
+  // Search filter
+  const filteredGoals = goals.filter(goal =>
+    goal.goalType.toLowerCase().includes(searchQuery.toLowerCase())
+    || (goal.status && goal.status.toLowerCase().includes(searchQuery.toLowerCase()))
+    || (goal.targetValue && goal.targetValue.toString().includes(searchQuery))
+    || (goal.currentValue && goal.currentValue.toString().includes(searchQuery))
+  );
+
+  // PDF download handler
+  const handleDownloadPDF = async () => {
+    const element = printRef.current;
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF({
+      orientation: "landscape",
+      unit: "pt",
+      format: "a4"
+    });
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("goals-table.pdf");
   };
 
   return (
@@ -83,6 +107,57 @@ const ViewGoals = () => {
             <Plus className="w-5 h-5" />
             <span>Add Goal</span>
           </button>
+        </div>
+
+        {/* Search and PDF Download */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6">
+          <input
+            type="text"
+            placeholder="Search goals..."
+            className="w-full md:w-1/3 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 mb-2 md:mb-0"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          <button
+            onClick={handleDownloadPDF}
+            className="ml-0 md:ml-4 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center"
+          >
+            Download PDF
+          </button>
+        </div>
+
+        {/* Hidden Table for PDF Export */}
+        <div ref={printRef} style={{ position: "absolute", left: "-9999px" }}>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gradient-to-r from-green-500 to-blue-500">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Goal Type</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Target Value</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Current Value</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Start Date</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">End Date</th>
+                <th className="px-6 py-3 text-left text-xs font-bold text-white uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-100">
+              {filteredGoals.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-4 text-center text-gray-400">No goals found.</td>
+                </tr>
+              ) : (
+                filteredGoals.map(goal => (
+                  <tr key={goal._id}>
+                    <td className="px-6 py-4">{goal.goalType}</td>
+                    <td className="px-6 py-4">{goal.targetValue}</td>
+                    <td className="px-6 py-4">{goal.currentValue}</td>
+                    <td className="px-6 py-4">{new Date(goal.startDate).toLocaleDateString()}</td>
+                    <td className="px-6 py-4">{new Date(goal.endDate).toLocaleDateString()}</td>
+                    <td className="px-6 py-4">{goal.status}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
 
         {/* Success Message */}
@@ -106,9 +181,9 @@ const ViewGoals = () => {
           <div className="flex justify-center items-center h-64">
             <Loader2 className="w-12 h-12 text-green-500 animate-spin" />
           </div>
-        ) : goals.length > 0 ? (
+        ) : filteredGoals.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {goals.map((goal) => (
+            {filteredGoals.map((goal) => (
               <div
                 key={goal._id}
                 className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 border border-gray-100"

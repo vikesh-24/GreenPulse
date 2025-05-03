@@ -19,7 +19,6 @@ const AddProject = () => {
         description: '',
         startDate: new Date().toISOString().split('T')[0],
         endDate: '',
-        goals: '',
         status: 'Not Started'
     });
     const [loading, setLoading] = useState(false);
@@ -41,12 +40,25 @@ const AddProject = () => {
         setLoading(true);
         setError(null);
 
+        // Validation for end date must be after start date
+        if (new Date(formData.endDate) <= new Date(formData.startDate)) {
+            setError('End date must be after the start date.');
+            setLoading(false);
+            return;
+        }
+
+        // Validation for description length
+        if (formData.description.length < 10 || formData.description.length > 20) {
+            setError('Description must be between 10 and 20 characters.');
+            setLoading(false);
+            return;
+        }
+
         try {
             const projectData = {
                 ...formData,
                 startDate: new Date(formData.startDate),
                 endDate: new Date(formData.endDate),
-                goals: formData.goals.split(',').map(goal => goal.trim())
             };
 
             const response = await fetch('http://localhost:5000/api/projects/addproject', {
@@ -90,9 +102,21 @@ const AddProject = () => {
                     </h2>
                 </div>
 
+                {/* Add Goal Button */}
+                <div className="flex justify-end mb-4">
+                    <button
+                        type="button"
+                        onClick={() => navigate('/addGoal')}
+                        className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
+                    >
+                        <Plus className="w-5 h-5 mr-2" />
+                        Add a Goal
+                    </button>
+                </div>
+
                 {/* Success Message */}
                 {success && (
-                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center">
+                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center animate-fade-in">
                         <CheckCircle2 className="w-5 h-5 text-green-500 mr-3" />
                         <p className="text-green-700">Project added successfully!</p>
                     </div>
@@ -107,53 +131,49 @@ const AddProject = () => {
                 )}
 
                 {/* Form */}
-                <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6">
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-8">
+                    <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Project Name */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700 mb-1">
                                 Project Name
                             </label>
                             <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <FileText className="h-5 w-5 text-gray-400" />
-                                </div>
+                                <FileText className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                 <input
                                     type="text"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
                                     required
-                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-lg"
                                     placeholder="Enter project name"
                                 />
                             </div>
                         </div>
 
                         {/* Project Type */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700 mb-1">
                                 Project Type
                             </label>
                             <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Target className="h-5 w-5 text-gray-400" />
-                                </div>
+                                <Target className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                 <input
                                     type="text"
                                     name="type"
                                     value={formData.type}
                                     onChange={handleChange}
                                     required
-                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-lg"
                                     placeholder="Enter project type"
                                 />
                             </div>
                         </div>
 
                         {/* Description */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700 mb-1">
                                 Description
                             </label>
                             <textarea
@@ -162,105 +182,80 @@ const AddProject = () => {
                                 onChange={handleChange}
                                 required
                                 rows="4"
-                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                className="block w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-lg"
                                 placeholder="Enter project description"
                             />
                         </div>
 
                         {/* Dates */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label className="block text-lg font-medium text-gray-700 mb-1">
                                     Start Date
                                 </label>
                                 <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Calendar className="h-5 w-5 text-gray-400" />
-                                    </div>
+                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                     <input
                                         type="date"
                                         name="startDate"
                                         value={formData.startDate}
                                         onChange={handleChange}
                                         required
-                                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-lg"
                                     />
                                 </div>
                             </div>
-
-                            <div className="space-y-2">
-                                <label className="block text-sm font-medium text-gray-700">
+                            <div>
+                                <label className="block text-lg font-medium text-gray-700 mb-1">
                                     End Date
                                 </label>
                                 <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Calendar className="h-5 w-5 text-gray-400" />
-                                    </div>
+                                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                     <input
                                         type="date"
                                         name="endDate"
                                         value={formData.endDate}
                                         onChange={handleChange}
                                         required
-                                        className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-lg"
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        {/* Goals */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
-                                Goals (comma-separated)
-                            </label>
-                            <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <ListChecks className="h-5 w-5 text-gray-400" />
-                                </div>
-                                <input
-                                    type="text"
-                                    name="goals"
-                                    value={formData.goals}
-                                    onChange={handleChange}
-                                    required
-                                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
-                                    placeholder="Enter project goals"
-                                />
-                            </div>
-                        </div>
-
                         {/* Status */}
-                        <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">
+                        <div>
+                            <label className="block text-lg font-medium text-gray-700 mb-1">
                                 Status
                             </label>
                             <select
                                 name="status"
                                 value={formData.status}
                                 onChange={handleChange}
-                                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+                                className="block w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 text-lg"
+                                required
                             >
                                 <option value="Not Started">Not Started</option>
                                 <option value="In Progress">In Progress</option>
                                 <option value="Completed">Completed</option>
+                                <option value="On Hold">On Hold</option>
                             </select>
                         </div>
 
-                        {/* Submit Button */}
-                        <div className="flex justify-end">
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {loading ? (
-                                    <Loader2 className="w-5 h-5 animate-spin" />
-                                ) : (
-                                    <Plus className="w-5 h-5" />
-                                )}
-                                <span>{loading ? 'Adding...' : 'Add Project'}</span>
-                            </button>
-                        </div>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full py-3 px-6 bg-gradient-to-r from-green-600 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-lg"
+                        >
+                            {loading ? (
+                                <span className="flex items-center justify-center">
+                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                                    Saving...
+                                </span>
+                            ) : (
+                                "Add Project"
+                            )}
+                        </button>
                     </form>
                 </div>
             </div>

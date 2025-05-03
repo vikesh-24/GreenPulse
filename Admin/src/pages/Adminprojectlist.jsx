@@ -11,13 +11,99 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  Loader2
+  Loader2,
+  Search,
+  Download,
+  FolderKanban
 } from "lucide-react";
+import { pdf, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+
+// PDF Styles
+const styles = StyleSheet.create({
+  page: {
+    padding: 30,
+    backgroundColor: '#ffffff'
+  },
+  header: {
+    marginBottom: 20,
+    textAlign: 'center'
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 10,
+    color: '#065f46'
+  },
+  table: {
+    display: 'table',
+    width: 'auto',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#065f46',
+    marginBottom: 20
+  },
+  tableRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#065f46'
+  },
+  tableCol: {
+    width: '25%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderColor: '#065f46',
+    padding: 5
+  },
+  tableHeader: {
+    backgroundColor: '#065f46',
+    color: '#ffffff',
+    fontWeight: 'bold'
+  },
+  tableCell: {
+    fontSize: 10
+  }
+});
+
+// PDF Document Component
+const ProjectsPDF = ({ projects }) => {
+  // Ensure projects is always an array
+  const safeProjects = Array.isArray(projects) ? projects : [];
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Project Management Report</Text>
+          <Text style={{ fontSize: 12, color: '#4b5563' }}>
+            Generated on {new Date().toLocaleDateString()}
+          </Text>
+        </View>
+        <View style={styles.table}>
+          <View style={[styles.tableRow, styles.tableHeader]}>
+            <View style={styles.tableCol}><Text>Project Name</Text></View>
+            <View style={styles.tableCol}><Text>Status</Text></View>
+            <View style={styles.tableCol}><Text>Type</Text></View>
+            <View style={styles.tableCol}><Text>Goals</Text></View>
+          </View>
+          {safeProjects.map((project) => (
+            <View key={project._id} style={styles.tableRow}>
+              <View style={styles.tableCol}><Text style={styles.tableCell}>{project.name}</Text></View>
+              <View style={styles.tableCol}><Text style={styles.tableCell}>{project.status}</Text></View>
+              <View style={styles.tableCol}><Text style={styles.tableCell}>{project.type}</Text></View>
+              <View style={styles.tableCol}><Text style={styles.tableCell}>{project.goals?.length || 0}</Text></View>
+            </View>
+          ))}
+        </View>
+      </Page>
+    </Document>
+  );
+};
 
 const ProjectList = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [pdfGenerating, setPdfGenerating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,6 +146,26 @@ const ProjectList = () => {
     }
   };
 
+  const handleDownloadPdf = async () => {
+    try {
+      setPdfGenerating(true);
+      const blob = await pdf(<ProjectsPDF projects={filteredProjects} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'projects-report.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Error generating PDF:", err);
+      setError("Failed to generate PDF. Please try again.");
+    } finally {
+      setPdfGenerating(false);
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case 'completed':
@@ -86,6 +192,14 @@ const ProjectList = () => {
     }
   };
 
+  // Filter projects based on search term
+  const filteredProjects = projects.filter(project => 
+    project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (project.description && project.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    project.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.type.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -97,13 +211,39 @@ const ProjectList = () => {
             </h2>
             <p className="text-gray-600 mt-2">Manage and track your projects</p>
           </div>
-          <button
-            className="mt-4 md:mt-0 px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center space-x-2"
-            onClick={() => navigate('/addproject')}
-          >
-            <Plus className="w-5 h-5" />
-            <span>Add Project</span>
-          </button>
+          <div className="flex space-x-4 mt-4 md:mt-0">
+            <button
+              className="px-6 py-3 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center space-x-2"
+              onClick={() => navigate('/addproject')}
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add Project</span>
+            </button>
+            <button
+              onClick={handleDownloadPdf}
+              disabled={pdfGenerating || filteredProjects.length === 0}
+              className="px-6 py-3 bg-white text-green-600 border border-green-600 font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center space-x-2 disabled:opacity-50"
+            >
+              <Download className="w-5 h-5" />
+              <span>{pdfGenerating ? 'Generating PDF...' : 'Export PDF'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="text"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200"
+            />
+          </div>
         </div>
 
         {/* Loading State */}
@@ -123,7 +263,7 @@ const ProjectList = () => {
         {/* Projects Grid */}
         {!loading && !error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
+            {filteredProjects.map((project) => (
               <div
                 key={project._id}
                 className="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg p-6 hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300 border border-gray-100"
@@ -154,7 +294,7 @@ const ProjectList = () => {
                   </div>
                   <div className="flex items-center text-gray-600">
                     <TrendingUp className="w-4 h-4 mr-2 text-purple-500" />
-                    <span className="text-sm">Goals: {project.goals.length}</span>
+                    <span className="text-sm">Goals: {project.goals?.length || 0}</span>
                   </div>
                 </div>
 
@@ -181,7 +321,7 @@ const ProjectList = () => {
         )}
 
         {/* Empty State */}
-        {!loading && !error && projects.length === 0 && (
+        {!loading && !error && filteredProjects.length === 0 && (
           <div className="text-center py-12">
             <div className="bg-white/80 backdrop-blur-lg rounded-xl p-8 max-w-md mx-auto">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">

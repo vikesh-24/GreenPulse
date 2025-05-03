@@ -28,7 +28,7 @@ const AdminSidebar = () => {
           <span>Users</span>
         </Link>
 
-        <Link to="/addproject" className="flex items-center space-x-2 text-lg hover:bg-green-700 p-2 rounded">
+        <Link to="/adminprojectlist" className="flex items-center space-x-2 text-lg hover:bg-green-700 p-2 rounded">
           <Settings2 className="w-6 h-6" />
           <span>Project</span>
         </Link>

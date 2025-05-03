@@ -7,13 +7,16 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  Clock4
+  Clock4,
+  X
 } from 'lucide-react';
 
 const ProjectList = () => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         fetchProjects();
@@ -66,6 +69,16 @@ const ProjectList = () => {
             default:
                 return 'bg-gray-100 text-gray-800';
         }
+    };
+
+    const handleViewDetails = (project) => {
+        setSelectedProject(project);
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSelectedProject(null);
     };
 
     return (
@@ -125,7 +138,10 @@ const ProjectList = () => {
                                         </div>
                                     </div>
 
-                                    <button className="mt-6 w-full flex items-center justify-center px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors group">
+                                    <button 
+                                        onClick={() => handleViewDetails(project)}
+                                        className="mt-6 w-full flex items-center justify-center px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors group"
+                                    >
                                         View Details
                                         <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                     </button>
@@ -140,6 +156,88 @@ const ProjectList = () => {
                         </div>
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">No Projects Found</h3>
                         <p className="text-gray-600">There are currently no projects available.</p>
+                    </div>
+                )}
+
+                {/* Project Details Modal */}
+                {isModalOpen && selectedProject && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                        <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                            <div className="p-6">
+                                <div className="flex justify-between items-start mb-6">
+                                    <div className="flex items-center space-x-4">
+                                        <div className={`p-2 rounded-xl ${getStatusColor(selectedProject.status)}`}>
+                                            {getStatusIcon(selectedProject.status)}
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-gray-900">{selectedProject.name}</h3>
+                                    </div>
+                                    <button
+                                        onClick={closeModal}
+                                        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                                    >
+                                        <X className="w-6 h-6 text-gray-500" />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div>
+                                        <h4 className="text-lg font-semibold text-gray-900 mb-2">Description</h4>
+                                        <p className="text-gray-600 leading-relaxed">{selectedProject.description}</p>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-4">
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-gray-900 mb-2">Project Timeline</h4>
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center text-gray-600">
+                                                        <Calendar className="w-5 h-5 mr-2 text-green-500" />
+                                                        <span>Start Date: {new Date(selectedProject.startDate).toLocaleDateString()}</span>
+                                                    </div>
+                                                    <div className="flex items-center text-gray-600">
+                                                        <Calendar className="w-5 h-5 mr-2 text-green-500" />
+                                                        <span>End Date: {new Date(selectedProject.endDate).toLocaleDateString()}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            <div>
+                                                <h4 className="text-lg font-semibold text-gray-900 mb-2">Project Status</h4>
+                                                <div className={`inline-flex items-center px-4 py-2 rounded-full ${getStatusColor(selectedProject.status)}`}>
+                                                    {getStatusIcon(selectedProject.status)}
+                                                    <span className="ml-2 font-medium">{selectedProject.status}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {selectedProject.location && (
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-gray-900 mb-2">Location</h4>
+                                            <p className="text-gray-600">{selectedProject.location}</p>
+                                        </div>
+                                    )}
+
+                                    {selectedProject.team && (
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-gray-900 mb-2">Team Members</h4>
+                                            <div className="flex flex-wrap gap-2">
+                                                {selectedProject.team.map((member, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm"
+                                                    >
+                                                        {member}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>

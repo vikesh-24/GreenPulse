@@ -22,10 +22,6 @@ const projectSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
-    goals: {
-        type: [String], 
-        required: true
-    },
     status: {
         type: String,
         enum: ["Not Started", "In Progress", "Completed", "On Hold"],
